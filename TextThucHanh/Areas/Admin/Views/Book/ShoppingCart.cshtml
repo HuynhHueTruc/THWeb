@@ -1,0 +1,90 @@
+﻿@model TextThucHanh.Areas.Admin.Models.CartItem
+@using TextThucHanh.Areas.Admin.Models;
+
+@{
+    ViewBag.Title = "ShoppingCart";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>ShoppingCart</h2>
+
+<div class="table-responsive">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>
+                    Title
+                </th>
+                <th>
+                    Author Name
+                </th>
+                <th>
+                    Price
+                </th>
+                <th>
+                    Year
+                </th>
+                <th>
+                    Cover Page
+                </th>
+                <th>
+                    Quality
+                </th>
+                <th>
+                    Total
+                </th>
+            </tr>
+        </thead>
+        @{
+            double total = 0;
+            List<CartItem> listCart = (List<CartItem>)Session["ShoppingCart"];
+        }
+        <tbody>
+            @if (listCart != null)
+            {
+                foreach (var item in (List<CartItem>)Session["ShoppingCart"])
+                {
+                    <tr>
+                        <td>
+                            @item.productOrder.Title
+                        </td>
+                        <td>
+                            @item.productOrder.AuthorName
+                        </td>
+                        <td>
+                            @item.productOrder.Price
+                        </td>
+                        <td>
+                            @item.productOrder.Year
+                        </td>
+                        <td>
+                            <img src="@Url.Content("~/Content/Image/" + item.productOrder.CoverPage)" alt="cover page" width="80" />
+                        </td>
+                        <td>
+                            <input type="text" value="@item.Quality" id="Quality" class="text-center" /> &nbsp;
+                            <input type="submit" value="Update" class="btn btn-warning" id="Update" />
+                        </td>
+                        <td>
+                            @{ double value = (double)item.productOrder.Price * item.Quality;
+                                total += value;
+                            }
+                            @value
+                        </td>
+                    </tr>
+
+                }
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="7" class="text-right">
+                    <strong>Total: @total</strong>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+    <p class="pull-right">
+        <input type="submit" class="btn btn-info" value="Continue shopping" /> &nbsp;
+        <input type="submit" class="btn btn-danger" value="CheckOut" />
+    </p>
+</div>

@@ -1,0 +1,124 @@
+﻿@model PagedList.IPagedList<Model.Framework.Book>
+@using PagedList.Mvc;
+@using TextThucHanh.Areas.Admin.Models;
+
+@{ ViewBag.Title = "getListBook";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml"; }
+
+<!--Ajax Process-->
+@{
+    if (Session["ShoppingCart"] != null)
+    {
+        int cartcount = 0;
+        List<CartItem> ls = (List<CartItem>)Session["ShoppingCart"];
+        foreach (CartItem item in ls)
+        {
+            cartcount += item.Quality;
+        }
+        ViewBag.count = cartcount;
+    }
+}
+
+<script>
+    function AddToCart(BookId) {
+        $.ajax({
+            type: 'POST', url: '/Admin/Book/AddToCart', data: { id: BookId }, success: function (data) {
+                $("#Cart_Amount").html(data.ItemAmount);
+            }
+        });
+    }
+</script>
+<!--End Ajax Process-->
+
+
+
+<br />
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading" style="font-weight:bold; font-size:20px">
+                Danh mục sách
+            </div>
+            <div class="panel-body">
+                <div class="row">
+
+
+                    <p>
+                        <img src="~/Content/Image/add.png" width="50px" />
+                        @Html.ActionLink("Thêm sách mới", "CreateBook")
+                    </p>
+                    <br />
+                    <p style="margin-left:10px;">
+                        <button class="btn btn-primary" type="button" onclick="window.open('/Admin/Book/ShoppingCart','_self')">
+                            Xem giỏ hàng <span class="badge" id="Cart_Amount">@ViewBag.count</span>
+                        </button>
+                    </p>
+
+
+                    <table class="table">
+                        <tr>
+                            <th>
+                                Tên sách
+                            </th>
+                            <th>
+                                Tác giả
+                            </th>
+                            <th>
+                                Giá bán
+                            </th>
+                            <th>
+                                Năm xuất bản
+                            </th>
+                            <th>
+                                Hình ảnh
+                            </th>
+                            <th>
+                                Mua hàng
+                            </th>
+                        </tr>
+
+                        @foreach (var item in Model)
+                        {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AuthorName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Price)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Year)
+                    </td>
+                    <td>
+                        <img src="@Url.Content("~/Content/Image/" + item.CoverPage)" width="45" />
+                    </td>
+                    <td>
+                        <input type="submit" class="btn btn-warning" onclick="AddToCart('@item.BookId')" value="Mua hàng" />
+
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "EditBook", new { id = item.BookId }) |
+                        @Html.ActionLink("Details", "Details", new { id = item.BookId }) |
+                        @Html.ActionLink("Delete", "Delete", new { id = item.BookId })
+                    </td>
+                </tr>
+}
+
+                    </table>
+
+                    <div style="margin-left:10px;">
+                        @Html.PagedListPager(Model, page => Url.Action("getListBook", new { page }))
+                    </div>
+
+                </div>
+                <!-- /.row (nested) -->
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+
+    </div>
+    <!-- /.row -->

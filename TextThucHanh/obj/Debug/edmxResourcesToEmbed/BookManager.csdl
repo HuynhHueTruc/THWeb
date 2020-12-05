@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="BookManagerModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Account">
+    <Key>
+      <PropertyRef Name="UserName" />
+    </Key>
+    <Property Name="UserName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="Book">
+    <Key>
+      <PropertyRef Name="BookId" />
+    </Key>
+    <Property Name="BookId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Title" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="AuthorName" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="Price" Type="Double" />
+    <Property Name="Year" Type="Int32" />
+    <Property Name="CoverPage" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Chapters" Relationship="Self.FK__Chapter__BookId__267ABA7A" FromRole="Book" ToRole="Chapter" />
+  </EntityType>
+  <EntityType Name="Chapter">
+    <Key>
+      <PropertyRef Name="ChapterId" />
+    </Key>
+    <Property Name="ChapterId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ChapterName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ShortContent" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+    <Property Name="BookId" Type="Int32" />
+    <NavigationProperty Name="Book" Relationship="Self.FK__Chapter__BookId__267ABA7A" FromRole="Chapter" ToRole="Book" />
+  </EntityType>
+  <Association Name="FK__Chapter__BookId__267ABA7A">
+    <End Role="Book" Type="Self.Book" Multiplicity="0..1" />
+    <End Role="Chapter" Type="Self.Chapter" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Book">
+        <PropertyRef Name="BookId" />
+      </Principal>
+      <Dependent Role="Chapter">
+        <PropertyRef Name="BookId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="QL_SachEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Accounts" EntityType="Self.Account" />
+    <EntitySet Name="Books" EntityType="Self.Book" />
+    <EntitySet Name="Chapters" EntityType="Self.Chapter" />
+    <AssociationSet Name="FK__Chapter__BookId__267ABA7A" Association="Self.FK__Chapter__BookId__267ABA7A">
+      <End Role="Book" EntitySet="Books" />
+      <End Role="Chapter" EntitySet="Chapters" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
